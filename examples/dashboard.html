@@ -1,0 +1,163 @@
+<html>
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <link rel="stylesheet" href="./style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+</head>
+<body>
+<div class="blockrow">
+    <div class="block-100">
+        <div class="title-lg">
+            Data Project 1.0
+        </div>
+        <div class="subtitle">Status: OK</div>
+        <div class="subtitle">Receive notifications about progress updates
+        <form action="/test" method="POST">
+                <input type="text" placeholder="Email address">
+                <input type="submit" value="Get notified">
+        </form>
+        </div>
+    </div>
+</div>
+<div class="blockrow-fluid">
+    <div class="block-lg-50 block-md-100">
+        <div class="title">My Data Series</div>
+        <div class="subtitle">First data Series</div>
+        <div id="chart">
+        </div>
+    </div>
+    <div class="block-lg-50 block-md-100 block-container">
+        <div class="sub-block-30 no-border">
+            <div class="title">Takes 30% of parent height</div>
+            <div class="text">
+                The U.S. Air Quality Index (AQI) is EPA's tool for communicating about outdoor air quality and health.
+                The AQI includes six color-coded categories, each corresponding to a range of index values. The higher
+                the AQI value, the greater the level of air pollution and the greater the health concern. For example,
+                an AQI value of 50 or below represents good air quality, while an AQI value over 300 represents
+                hazardous air quality.
+
+                For each pollutant an AQI value of 100 generally corresponds to an ambient air concentration that equals
+                the level of the short-term national ambient air quality standard for protection of public health. AQI
+                values at or below 100 are generally thought of as satisfactory. When AQI values are above 100, air
+                quality is unhealthy: at first for certain sensitive groups of people, then for everyone as AQI values
+                get higher.
+
+                The AQI is divided into six categories. Each category corresponds to a different level of health
+                concern. Each category also has a specific color. The color makes it easy for people to quickly
+                determine whether air quality is reaching unhealthy levels in their communities.
+            </div>
+        </div>
+        <div class="sub-block-70">
+            <div class="title">Takes 70% of parent height</div>
+        </div>
+    </div>
+</div>
+
+<div class="blockrow">
+    <div class="block-lg-10 block-md-40">
+        <div class="title">AQI (PM2.5)</div>
+        <div class="subtitle">Last updated: <span class="tooltip tooltip-right">5 min ago<span class="tooltip-text">This is a tooltip!</span>
+</span></div>
+        <div class="number">8.6</div>
+    </div>
+    <div class="block-30 block-md-100">
+        <div class="title">Second Series</div>
+        <div class="subtitle">Second data Series</div>
+
+        <div class="number">8.6</div>
+    </div>
+    <div class="block-40 block-md-100 block-container">
+        <div class="sub-block-50">
+            <div class="title">Second Series A</div>
+            <div class="subtitle">Second data Series</div>
+            <div class="number">8.6</div>
+
+        </div>
+        <div class="sub-block-50">
+            <div class="title">Second Series B</div>
+            <div class="subtitle">Second data Series</div>
+            <div class="number">8.6</div>
+        </div>
+    </div>
+    <div class="block-20 block-md-100 tab-block">
+        <div class="tabs">
+            <a href="#tab1" class="tab active">Tab 1</a>
+            <a href="#tab2" class="tab">Tab 2</a>
+        </div>
+        <div id="tab1" class="tab-content">
+            <a href="#modal1">Open Modal</a>
+        </div>
+        <div id="tab2" class="tab-content">
+            <table>
+                <thead>
+                <tr>
+                    <th scope="col">Temp</th>
+                    <th scope="col">Feel</th>
+                    <th scope="col">Humidity</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th scope="row">85.2</th>
+                    <th>87.9</th>
+                    <th>80%</th>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="blockrow">
+    <div class="block-40">
+        <div class="title">News</div>
+        <div class="subtitle">Last updated 5 minutes ago</div>
+        <div class="card-list">
+            <div class="card">
+                <div class="card-header">AQI today is bad</div>
+                <div class="card-body">PM2.5 concentration is currently 6.4 times the World Health Organization annual PM2.5 guideline value.</div>
+            </div>
+            <div class="card">
+                <div class="card-header">Rain expected</div>
+                <div class="card-body">Expect rain showers throughout the day</div>
+            </div>
+            <div class="card">
+                <div class="card-header">Rain expected</div>
+                <div class="card-body">Expect rain showers throughout the day</div>
+            </div>
+        </div>
+    </div>
+    <div class="block-60">
+
+    </div>
+</div>
+<div id="modal1" class="modal">
+    <div class="modal-content">
+        Hello!
+        <a href="#modal-close" class="modal-close">&times;</a>
+
+    </div>
+</div>
+</body>
+<script>
+    var options = {
+        chart: {
+            height: '300px',
+            type: 'line'
+        },
+        stroke: {
+            width: 1
+        },
+        series: [{
+            name: 'sales',
+            data: [30, 40, 35, 50, 49, 60, 70, 91, 125]
+        }],
+        xaxis: {
+            categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999]
+        }
+    }
+
+    var chart = new ApexCharts(document.querySelector("#chart"), options);
+    chart.render();
+</script>
+</html>
