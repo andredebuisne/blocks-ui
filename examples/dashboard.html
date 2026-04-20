@@ -1,7 +1,9 @@
 <html>
 <head>
+    <meta charset="UTF-8">
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <link rel="stylesheet" href="../blocks.css">
+    <script src="../blocks.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
@@ -54,53 +56,54 @@
 </div>
 
 <div class="blockrow">
-    <div class="block-lg-10 block-md-40">
+    <div class="block-lg-20 block-md-40">
         <div class="title">AQI (PM2.5)</div>
         <div class="subtitle">Last updated: <span class="tooltip tooltip-right">5 min ago<span class="tooltip-text">This is a tooltip!</span>
 </span></div>
-        <div class="number">8.6</div>
+        <div class="number">42</div>
+        <div class="subtitle">Moderate</div>
     </div>
-    <div class="block-30 block-md-100">
-        <div class="title">Second Series</div>
-        <div class="subtitle">Second data Series</div>
-
-        <div class="number">8.6</div>
+    <div class="block-lg-20 block-md-40">
+        <div class="title">Temperature</div>
+        <div class="subtitle">Feels like 91°F</div>
+        <div class="number">88 <span class="number-unit">°F</span></div>
     </div>
-    <div class="block-40 block-md-100 block-container">
+    <div class="block-lg-20 block-md-100 block-container">
         <div class="sub-block-50">
-            <div class="title">Second Series A</div>
-            <div class="subtitle">Second data Series</div>
-            <div class="number">8.6</div>
-
+            <div class="title">Humidity</div>
+            <div class="subtitle">Dew point 74°F</div>
+            <div class="number">78%</div>
         </div>
         <div class="sub-block-50">
-            <div class="title">Second Series B</div>
-            <div class="subtitle">Second data Series</div>
-            <div class="number">8.6</div>
+            <div class="title">Wind Speed</div>
+            <div class="subtitle">Gusts up to 22 mph</div>
+            <div class="number">14 <span class="number-unit">mph</span></div>
         </div>
     </div>
-    <div class="block-20 block-md-100 tab-block">
+    <div class="block-lg-40 block-md-100 tab-block">
         <div class="tabs">
-            <a href="#tab1" class="tab active">Tab 1</a>
-            <a href="#tab2" class="tab">Tab 2</a>
+            <a href="#tab1" class="tab active">Forecast</a>
+            <a href="#tab2" class="tab">Conditions</a>
         </div>
         <div id="tab1" class="tab-content">
-            <a href="#modal1">Open Modal</a>
+            <a href="#modal1">View full forecast</a>
         </div>
         <div id="tab2" class="tab-content">
             <table>
                 <thead>
                 <tr>
                     <th scope="col">Temp</th>
-                    <th scope="col">Feel</th>
+                    <th scope="col">Feels</th>
                     <th scope="col">Humidity</th>
+                    <th scope="col">Wind</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr>
-                    <th scope="row">85.2</th>
-                    <th>87.9</th>
-                    <th>80%</th>
+                    <th scope="row">88°F</th>
+                    <th>91°F</th>
+                    <th>78%</th>
+                    <th>14 mph</th>
                 </tr>
                 </tbody>
             </table>
@@ -139,24 +142,10 @@
 </div>
 </body>
 <script>
-    var options = {
-        chart: {
-            height: '300px',
-            type: 'line'
-        },
-        stroke: {
-            width: 1
-        },
-        series: [{
-            name: 'sales',
-            data: [30, 40, 35, 50, 49, 60, 70, 91, 125]
-        }],
-        xaxis: {
-            categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999]
-        }
-    }
-
-    var chart = new ApexCharts(document.querySelector("#chart"), options);
-    chart.render();
+    Blocks.chart('#chart', {
+        type: 'line',
+        categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999],
+        series: [{ name: 'Sales', data: [30, 40, 35, 50, 49, 60, 70, 91, 125] }]
+    });
 </script>
 </html>

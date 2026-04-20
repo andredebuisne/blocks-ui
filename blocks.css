@@ -290,17 +290,49 @@ body {
 
 @media (max-width: 575px) {
     [class^="block-"],[class*=" block-"] {
-        width:calc(100% - 8px)
+        width: calc(100% - 8px)
+    }
+
+    .blockrow, .blockrow-fluid {
+        max-height: none
+    }
+
+    .tab {
+        padding: 8px 10px;
+        font-size: 0.85rem
+    }
+
+    input[type=text], input[type=submit] {
+        width: 100%;
+        box-sizing: border-box
+    }
+
+    .title-lg {
+        font-size: 1.2rem
+    }
+
+    .number {
+        font-size: 2rem
     }
 }
 
 .number {
-    font-size: 1.5rem;
+    font-size: 3rem;
+    line-height: 1;
     margin-top: auto;
     margin-bottom: auto;
     font-weight: bolder;
     color: #d18f01;
-    text-align: center
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 6px
+}
+
+.number .number-unit {
+    font-size: 1rem;
+    font-weight: normal;
+    color: #aaa
 }
 
 .text {
