@@ -1,6 +1,6 @@
 # Blocks UI
 
-## A simple UI framework to visualize data
+## A ligthweight UI framework to visualize data
 
 ![ui.png](ui.png)
 

@@ -32,8 +32,13 @@ body {
 .blockrow {
     display: flex;
     flex-wrap: wrap;
-    max-height: 350px;
+    max-height: 30vw;
     align-items: stretch
+}
+
+.blockrow > [class^="block-"],
+.blockrow > [class*=" block-"] {
+    max-height: inherit
 }
 
 .blockrow-fluid {
@@ -341,6 +346,14 @@ body {
     font-size: 1.2rem;
 }
 
+.footer {
+    margin-top: auto;
+    padding-top: 8px;
+    border-top: 1px solid #555;
+    font-size: 0.85rem;
+    color: #aaa
+}
+
 .title {
     font-size: 1.2rem;
     font-weight: bolder;
@@ -441,7 +454,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    margin-top: 8px
+    margin-top: 8px;
 }
 
 .card-list-horizontal {
