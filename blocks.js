@@ -41,7 +41,7 @@ const Blocks = (() => {
     function parseRows(rows, xKey, yKeys, limit, type) {
         const data = limit ? rows.slice(0, limit) : rows;
 
-        if (type === 'scatter') {
+        if (XY_TYPES.includes(type)) {
             const key = yKeys ? yKeys[0] : Object.keys(data[0]).find(k => k !== xKey && typeof data[0][k] === 'number');
             return {
                 series: [{
@@ -188,11 +188,64 @@ const Blocks = (() => {
         });
     }
 
+    function healthcheck(checks, interval) {
+        interval = interval || 30000;
+        const endpoints = (Array.isArray(checks) ? checks : [checks])
+            .map(c => typeof c === 'string' ? { url: c, name: c } : c);
+        const results = endpoints.map(e => ({ ...e, up: null }));
+
+        const el = document.createElement('div');
+        el.className = 'hc-status';
+
+        const navbar = document.querySelector('.navbar');
+        if (navbar) {
+            const toggle = navbar.querySelector('.navbar-toggle');
+            toggle ? navbar.insertBefore(el, toggle) : navbar.appendChild(el);
+        } else {
+            Object.assign(el.style, { position: 'fixed', top: '8px', right: '8px', zIndex: 200 });
+            document.body.appendChild(el);
+        }
+
+        async function poll() {
+            await Promise.all(results.map(async r => {
+                try {
+                    const res = await fetch(r.url, { method: 'HEAD', cache: 'no-store', signal: AbortSignal.timeout(5000) });
+                    r.up = res.ok;
+                } catch { r.up = false; }
+            }));
+            render();
+        }
+
+        function render() {
+            const up = results.filter(r => r.up === true).length;
+            const total = results.length;
+            const allUp = up === total;
+            const pending = results.some(r => r.up === null);
+            const state = pending ? '' : (allUp ? 'up' : 'down');
+            const label = total === 1
+                ? (pending ? '&hellip;' : allUp ? 'OK' : 'DOWN')
+                : (pending ? '&hellip;' : `${up}/${total}`);
+
+            el.innerHTML = `<span class="hc-dot ${state}"></span><span class="hc-label">${label}</span>`
+                + (total > 1 ? `<div class="hc-popup">${
+                    results.map(r => `<div class="hc-row">
+                        <span class="hc-dot ${r.up === null ? '' : r.up ? 'up' : 'down'}"></span>
+                        <span>${r.name}</span>
+                    </div>`).join('')
+                }</div>` : '');
+        }
+
+        render();
+        poll();
+        const timer = setInterval(poll, interval);
+        return { stop: () => clearInterval(timer), refresh: poll };
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
         initTabs();
         initNavbar();
         initSidebar();
     });
 
-    return { chart, load, initTabs, initNavbar, initSidebar };
+    return { chart, load, healthcheck, initTabs, initNavbar, initSidebar };
 })();

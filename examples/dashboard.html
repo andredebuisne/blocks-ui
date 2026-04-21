@@ -229,6 +229,12 @@
         yKeys: ['average_precipitation']
     });
 
+    Blocks.healthcheck([
+        { url: 'https://httpbin.org/status/200', name: 'API' },
+        { url: 'https://httpbin.org/status/200', name: 'Weather Feed' },
+        { url: 'https://httpbin.org/status/500', name: 'Alert Service' }
+    ], 30000);
+
     const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
     Blocks.load('https://raw.githubusercontent.com/fivethirtyeight/data/master/us-weather-history/KNYC.csv', 'csv')

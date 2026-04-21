@@ -858,6 +858,68 @@ input[type=submit] {
     background: #252525
 }
 
+/* Healthcheck */
+.hc-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border: 1px solid transparent;
+    position: relative;
+    cursor: default;
+    white-space: nowrap
+}
+
+.hc-status:hover { border-color: #555 }
+
+.hc-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background: #555
+}
+
+.hc-dot.up {
+    background: #4caf50;
+    animation: hc-pulse 2s ease-in-out infinite
+}
+
+.hc-dot.down { background: #e05252 }
+
+@keyframes hc-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(76,175,80,0.6) }
+    50%       { box-shadow: 0 0 0 5px rgba(76,175,80,0) }
+}
+
+.hc-label {
+    font-size: 0.85rem;
+    color: #ccc
+}
+
+.hc-popup {
+    display: none;
+    position: absolute;
+    top: calc(100% + 4px);
+    right: 0;
+    background: #2a2a2a;
+    border: 1px solid #555;
+    padding: 6px 12px;
+    z-index: 200;
+    min-width: 180px
+}
+
+.hc-status:hover .hc-popup { display: block }
+
+.hc-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+    font-size: 0.85rem;
+    color: #ccc
+}
+
 /* ApexCharts overrides */
 .apexcharts-canvas {
     touch-action: pan-y !important
