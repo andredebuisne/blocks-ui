@@ -1,10 +1,9 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../blocks.css">
     <script src="../blocks.js"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
 <div class="blockrow">
@@ -23,8 +22,8 @@
 </div>
 <div class="blockrow-fluid">
     <div class="block-lg-50 block-md-100">
-        <div class="title">My Data Series</div>
-        <div class="subtitle">First data Series</div>
+        <div class="title">NYC Temperature 2014–2015</div>
+        <div class="subtitle">Daily actual min / mean / max °F</div>
         <div id="chart">
         </div>
     </div>
@@ -162,8 +161,10 @@
 <script>
     Blocks.chart('#chart', {
         type: 'line',
-        categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999],
-        series: [{ name: 'Sales', data: [30, 40, 35, 50, 49, 60, 70, 91, 125] }]
+        src: 'https://raw.githubusercontent.com/fivethirtyeight/data/master/us-weather-history/KNYC.csv',
+        dataType: 'csv',
+        xKey: 'date',
+        yKeys: ['actual_mean_temp', 'actual_min_temp', 'actual_max_temp']
     });
 </script>
 </html>
