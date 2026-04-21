@@ -4,7 +4,7 @@
 
 [![npm](https://img.shields.io/npm/v/@ajdeb/blocks-ui)](https://www.npmjs.com/package/@ajdeb/blocks-ui)
 
-![ui.png](ui.png)
+![ui.png](https://raw.githubusercontent.com/andredebuisne/blocks-ui/master/ui.png)
 
 ## Installation
 1. CDN (always latest):
@@ -86,7 +86,7 @@ For production, pin a specific version:
 </html>
 ```
 This will create a simple blocks UI:
-![quickstart.png](quickstart.png)
+![quickstart.png](https://raw.githubusercontent.com/andredebuisne/blocks-ui/master/quickstart.png)
 
 ## Motivation
 There is simply no library today that is a light CSS/JS library that can help with
