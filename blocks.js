@@ -1,17 +1,28 @@
 const Blocks = (() => {
     const defaults = {
-        chart: { background: 'transparent', foreColor: '#fff', toolbar: { show: false }, zoom: { enabled: true } },
+        chart: {
+            background: 'transparent',
+            foreColor: '#fff',
+            toolbar: { show: true, tools: { download: false} },
+            zoom: { enabled: true, type: 'x' }
+        },
         stroke: { width: 1 },
         grid: { borderColor: '#444' },
         tooltip: { theme: 'dark' },
         legend: { show: true, labels: { colors: '#fff' } },
-        xaxis: { tickAmount: 10, labels: { style: { colors: '#aaa' }, rotate: -45, hideOverlappingLabels: true }, axisBorder: { color: '#555' }, axisTicks: { color: '#555' } },
+        xaxis: {
+            tickAmount: 10,
+            labels: { style: { colors: '#aaa' }, rotate: -45, hideOverlappingLabels: true },
+            axisBorder: { color: '#555' },
+            axisTicks: { color: '#555' }
+        },
         yaxis: { labels: { style: { colors: '#aaa' } } },
         dataLabels: { enabled: false },
         colors: ['#f6c45e', '#d18f01', '#fbd176', '#888', '#e07b39', '#6ab187']
     };
 
     const PIE_TYPES = ['pie', 'donut'];
+    const XY_TYPES  = ['scatter', 'heatmap'];
 
     function loadScript(src) {
         return new Promise((resolve, reject) => {
@@ -33,7 +44,6 @@ const Blocks = (() => {
         if (type === 'scatter') {
             const key = yKeys ? yKeys[0] : Object.keys(data[0]).find(k => k !== xKey && typeof data[0][k] === 'number');
             return {
-                categories: [],
                 series: [{
                     name: key.replace(/_/g, ' '),
                     data: data
@@ -61,22 +71,25 @@ const Blocks = (() => {
         };
     }
 
-    function loadData(src, dataType, xKey, yKeys, limit, type, cb) {
+    function fetchRows(src, dataType, cb) {
         if (dataType === 'csv') {
             Papa.parse(src, {
                 download: true, header: true, dynamicTyping: true,
-                complete: ({ data }) => cb(null, parseRows(data.filter(r => r[xKey]), xKey, yKeys, limit, type)),
+                complete: ({ data }) => cb(null, data.filter(r => Object.values(r).some(v => v != null && v !== ''))),
                 error: cb
             });
         } else {
             fetch(src)
                 .then(r => r.json())
-                .then(json => {
-                    const rows = Array.isArray(json) ? json : (json.data || Object.values(json)[0]);
-                    cb(null, parseRows(rows, xKey, yKeys, limit, type));
-                })
+                .then(json => cb(null, Array.isArray(json) ? json : (json.data || Object.values(json)[0])))
                 .catch(cb);
         }
+    }
+
+    function load(src, dataType) {
+        return ready.then(() => new Promise((resolve, reject) => {
+            fetchRows(src, dataType, (err, rows) => err ? reject(err) : resolve(rows));
+        }));
     }
 
     function chart(selector, opts = {}) {
@@ -86,6 +99,7 @@ const Blocks = (() => {
 
             const type = opts.type || 'line';
             const isPie = PIE_TYPES.includes(type);
+            const isXY  = XY_TYPES.includes(type);
             const legendOpts = typeof opts.legend === 'object' ? opts.legend : {};
 
             function render(result) {
@@ -102,9 +116,11 @@ const Blocks = (() => {
                     cfg.labels = result.labels || opts.labels || [];
                 } else {
                     cfg.stroke = { ...defaults.stroke, ...(opts.stroke || {}) };
-                    cfg.grid = { ...defaults.grid, ...(opts.grid || {}) };
-                    cfg.xaxis = { ...defaults.xaxis, categories: result.categories || [], ...(opts.xaxis || {}) };
-                    cfg.yaxis = { ...defaults.yaxis, ...(opts.yaxis || {}) };
+                    cfg.grid   = { ...defaults.grid,   ...(opts.grid   || {}) };
+                    cfg.yaxis  = { ...defaults.yaxis,  ...(opts.yaxis  || {}) };
+                    cfg.xaxis  = isXY
+                        ? { ...defaults.xaxis, ...(opts.xaxis || {}) }
+                        : { ...defaults.xaxis, categories: result.categories || [], ...(opts.xaxis || {}) };
                 }
 
                 const instance = new ApexCharts(el, cfg);
@@ -114,17 +130,17 @@ const Blocks = (() => {
 
             if (opts.src) {
                 return new Promise((resolve, reject) => {
-                    loadData(opts.src, opts.dataType || 'json', opts.xKey, opts.yKeys, opts.limit, type, (err, result) => {
+                    fetchRows(opts.src, opts.dataType || 'json', (err, rows) => {
                         if (err) { console.error('Blocks: failed to load', opts.src, err); reject(err); return; }
-                        resolve(render(result));
+                        resolve(render(parseRows(rows, opts.xKey, opts.yKeys, opts.limit, type)));
                     });
                 });
             }
 
             return render({
-                series: opts.series || [],
+                series:     opts.series     || [],
                 categories: opts.categories || [],
-                labels: opts.labels || []
+                labels:     opts.labels     || []
             });
         });
     }
@@ -132,7 +148,7 @@ const Blocks = (() => {
     function initTabs() {
         document.querySelectorAll('.tabs').forEach(tabsEl => {
             const parent = tabsEl.parentElement;
-            const tabs = tabsEl.querySelectorAll('.tab');
+            const tabs   = tabsEl.querySelectorAll('.tab');
 
             function activate(tab) {
                 const targetId = tab.getAttribute('href').replace('#', '');
@@ -157,5 +173,5 @@ const Blocks = (() => {
 
     document.addEventListener('DOMContentLoaded', initTabs);
 
-    return { chart, initTabs };
+    return { chart, load, initTabs };
 })();

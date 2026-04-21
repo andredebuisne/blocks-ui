@@ -106,6 +106,15 @@
     </div>
 </div>
 
+<div class="blockrow-fluid">
+    <div class="block-100">
+        <div class="title">NYC Daily Temperature Heatmap 2014–2015</div>
+        <div class="subtitle">Mean °F by day and month</div>
+        <div id="chart-heatmap"></div>
+        <div class="footer">Source: FiveThirtyEight / KNYC</div>
+    </div>
+</div>
+
 <div class="blockrow">
     <div class="block-40">
         <div class="title">News</div>
@@ -185,5 +194,25 @@
         xKey: 'actual_mean_temp',
         yKeys: ['average_precipitation']
     });
+
+    const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+    Blocks.load('https://raw.githubusercontent.com/fivethirtyeight/data/master/us-weather-history/KNYC.csv', 'csv')
+        .then(rows => {
+            const groups = {};
+            rows.forEach(r => {
+                const [year, month, day] = r.date.split('-').map(Number);
+                const key = MONTHS[month - 1] + " '" + String(year).slice(2);
+                if (!groups[key]) groups[key] = [];
+                groups[key].push({ x: String(day), y: r.actual_mean_temp });
+            });
+
+            Blocks.chart('#chart-heatmap', {
+                type: 'heatmap',
+                series: Object.entries(groups).map(([name, data]) => ({ name, data })),
+                height: 380,
+                legend: false
+            });
+        });
 </script>
 </html>
