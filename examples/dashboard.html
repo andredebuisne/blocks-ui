@@ -23,7 +23,8 @@
 <div class="blockrow">
     <div class="block-lg-20 block-md-40">
         <div class="title">AQI (PM2.5)</div>
-        <div class="subtitle">Last updated: <span class="tooltip tooltip-right">5 min ago<span class="tooltip-text">This is a tooltip!</span></span></div>
+        <div class="subtitle">Last updated: <span class="tooltip tooltip-right">5 min ago<span class="tooltip-text">This is a tooltip!</span></span>
+        </div>
         <div class="number">42</div>
         <div class="subtitle">Moderate</div>
         <div class="footer">Source: EPA AirNow</div>
@@ -56,20 +57,20 @@
         <div id="tab2" class="tab-content">
             <table>
                 <thead>
-                    <tr>
-                        <th scope="col">Temp</th>
-                        <th scope="col">Feels</th>
-                        <th scope="col">Humidity</th>
-                        <th scope="col">Wind</th>
-                    </tr>
+                <tr>
+                    <th scope="col">Temp</th>
+                    <th scope="col">Feels</th>
+                    <th scope="col">Humidity</th>
+                    <th scope="col">Wind</th>
+                </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <th scope="row">88°F</th>
-                        <th>91°F</th>
-                        <th>78%</th>
-                        <th>14 mph</th>
-                    </tr>
+                <tr>
+                    <th scope="row">88°F</th>
+                    <th>91°F</th>
+                    <th>78%</th>
+                    <th>14 mph</th>
+                </tr>
                 </tbody>
             </table>
         </div>
@@ -195,7 +196,7 @@
         yKeys: ['average_precipitation']
     });
 
-    const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
     Blocks.load('https://raw.githubusercontent.com/fivethirtyeight/data/master/us-weather-history/KNYC.csv', 'csv')
         .then(rows => {
@@ -204,12 +205,12 @@
                 const [year, month, day] = r.date.split('-').map(Number);
                 const key = MONTHS[month - 1] + " '" + String(year).slice(2);
                 if (!groups[key]) groups[key] = [];
-                groups[key].push({ x: String(day), y: r.actual_mean_temp });
+                groups[key].push({x: String(day), y: r.actual_mean_temp});
             });
 
             Blocks.chart('#chart-heatmap', {
                 type: 'heatmap',
-                series: Object.entries(groups).map(([name, data]) => ({ name, data })),
+                series: Object.entries(groups).map(([name, data]) => ({name, data})),
                 height: 380,
                 legend: false
             });
