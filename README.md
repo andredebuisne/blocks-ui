@@ -100,6 +100,15 @@ A block body can contain:
 - Plain HTML
 
 ## Features
+- Display individual metrics
+- Display tables / heatmaps
+- Display charts
+- Display maps (coming soon)
+- Display card lists
+- Display your custom HTML
+- Load data directly in your script (SSR) or via an API (JSON or CSV for now)
+- Add a navbar and a side menu
+- Add API healthchecks
 
 ### Disclaimer
 This library was originally built by hand, and I've recently picked it back up and use some LLM tools to help me move it

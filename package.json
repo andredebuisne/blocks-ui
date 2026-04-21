@@ -1,0 +1,22 @@
+{
+  "name": "blocks-ui",
+  "version": "0.1.0",
+  "description": "Lightweight CSS/JS framework for data visualization dashboards",
+  "main": "blocks.js",
+  "style": "blocks.css",
+  "files": [
+    "blocks.js",
+    "blocks.min.js",
+    "blocks.css",
+    "blocks.min.css"
+  ],
+  "keywords": ["dashboard", "charts", "visualization", "css", "ui", "data"],
+  "license": "MIT",
+  "devDependencies": {
+    "clean-css-cli": "^5.6.3",
+    "terser": "^5.31.0"
+  },
+  "scripts": {
+    "build": "terser blocks.js --compress --mangle --output blocks.min.js && cleancss --output blocks.min.css blocks.css"
+  }
+}
