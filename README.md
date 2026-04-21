@@ -100,3 +100,7 @@ A block body can contain:
 - Plain HTML
 
 ## Features
+
+### Disclaimer
+This library was originally built by hand, and I've recently picked it back up and use some LLM tools to help me move it
+along at a faster pace. All reviews are manual, but please use carefully.
