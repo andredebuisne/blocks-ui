@@ -33,15 +33,14 @@ Add this line in your `<head>`
 <div class="blockrow">
     <div class="block-lg-20 block-md-40">
         <div class="title">Latest price</div>
-        <div class="subtitle">Last updated: <span class="tooltip tooltip-right">5 min ago<span class="tooltip-text">This is a tooltip!</span></span>
+        <div class="subtitle">Last updated: 5 min ago
         </div>
         <div class="number">$3,600</div>
         <div class="footer">Source: NYSE</div>
     </div>
     <div class="block-lg-20 block-md-40">
         <div class="title">Volatility</div>
-        <div class="subtitle">Last updated: <span class="tooltip tooltip-right">5 min ago<span class="tooltip-text">This is a tooltip!</span></span>
-        </div>
+        <div class="subtitle">Last updated: 5 min ago</div>
         <div class="number">67%</div>
     </div>
     <div class="block-lg-60 block-md-100 tab-block">
@@ -76,7 +75,6 @@ Add this line in your `<head>`
         </div>
     </div>
 </div>
-</body>
 </html>
 ```
 This will create a simple blocks UI:
