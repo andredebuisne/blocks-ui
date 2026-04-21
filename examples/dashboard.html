@@ -6,50 +6,16 @@
     <script src="../blocks.js"></script>
 </head>
 <body>
+
 <div class="blockrow">
     <div class="block-100">
-        <div class="title-lg">
-            Data Project 1.0
-        </div>
-        <div class="subtitle">Status: OK</div>
-        <div class="subtitle">Receive notifications about progress updates
-        <form action="/test" method="POST">
+        <div class="title-lg">Weather Dashboard</div>
+        <div class="subtitle">Status: OK &mdash; New York City &amp; Seattle</div>
+        <div class="subtitle">Receive notifications about updates
+            <form action="/test" method="POST">
                 <input type="text" placeholder="Email address">
                 <input type="submit" value="Get notified">
-        </form>
-        </div>
-    </div>
-</div>
-<div class="blockrow-fluid">
-    <div class="block-lg-50 block-md-100">
-        <div class="title">NYC Temperature 2014–2015</div>
-        <div class="subtitle">Daily actual min / mean / max °F</div>
-        <div id="chart">
-        </div>
-    </div>
-    <div class="block-lg-50 block-md-100 block-container">
-        <div class="sub-block-30 no-border">
-            <div class="title">Takes 30% of parent height</div>
-            <div class="text">
-                The U.S. Air Quality Index (AQI) is EPA's tool for communicating about outdoor air quality and health.
-                The AQI includes six color-coded categories, each corresponding to a range of index values. The higher
-                the AQI value, the greater the level of air pollution and the greater the health concern. For example,
-                an AQI value of 50 or below represents good air quality, while an AQI value over 300 represents
-                hazardous air quality.
-
-                For each pollutant an AQI value of 100 generally corresponds to an ambient air concentration that equals
-                the level of the short-term national ambient air quality standard for protection of public health. AQI
-                values at or below 100 are generally thought of as satisfactory. When AQI values are above 100, air
-                quality is unhealthy: at first for certain sensitive groups of people, then for everyone as AQI values
-                get higher.
-
-                The AQI is divided into six categories. Each category corresponds to a different level of health
-                concern. Each category also has a specific color. The color makes it easy for people to quickly
-                determine whether air quality is reaching unhealthy levels in their communities.
-            </div>
-        </div>
-        <div class="sub-block-70">
-            <div class="title">Takes 70% of parent height</div>
+            </form>
         </div>
     </div>
 </div>
@@ -57,8 +23,7 @@
 <div class="blockrow">
     <div class="block-lg-20 block-md-40">
         <div class="title">AQI (PM2.5)</div>
-        <div class="subtitle">Last updated: <span class="tooltip tooltip-right">5 min ago<span class="tooltip-text">This is a tooltip!</span>
-</span></div>
+        <div class="subtitle">Last updated: <span class="tooltip tooltip-right">5 min ago<span class="tooltip-text">This is a tooltip!</span></span></div>
         <div class="number">42</div>
         <div class="subtitle">Moderate</div>
         <div class="footer">Source: EPA AirNow</div>
@@ -91,25 +56,56 @@
         <div id="tab2" class="tab-content">
             <table>
                 <thead>
-                <tr>
-                    <th scope="col">Temp</th>
-                    <th scope="col">Feels</th>
-                    <th scope="col">Humidity</th>
-                    <th scope="col">Wind</th>
-                </tr>
+                    <tr>
+                        <th scope="col">Temp</th>
+                        <th scope="col">Feels</th>
+                        <th scope="col">Humidity</th>
+                        <th scope="col">Wind</th>
+                    </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <th scope="row">88°F</th>
-                    <th>91°F</th>
-                    <th>78%</th>
-                    <th>14 mph</th>
-                </tr>
+                    <tr>
+                        <th scope="row">88°F</th>
+                        <th>91°F</th>
+                        <th>78%</th>
+                        <th>14 mph</th>
+                    </tr>
                 </tbody>
             </table>
         </div>
     </div>
 </div>
+
+<div class="blockrow-fluid">
+    <div class="block-lg-60 block-md-100">
+        <div class="title">NYC Daily Temperature 2014–2015</div>
+        <div class="subtitle">Actual min / mean / max °F</div>
+        <div id="chart-temp"></div>
+        <div class="footer">Source: FiveThirtyEight / KNYC</div>
+    </div>
+    <div class="block-lg-40 block-md-100">
+        <div class="title">Seattle Daily Precipitation 2014–2015</div>
+        <div class="subtitle">Actual vs average (inches)</div>
+        <div id="chart-precip"></div>
+        <div class="footer">Source: FiveThirtyEight / KSEA</div>
+    </div>
+</div>
+
+<div class="blockrow-fluid">
+    <div class="block-lg-30 block-md-100">
+        <div class="title">NY Energy Mix</div>
+        <div class="subtitle">Generation by source, 2023</div>
+        <div id="chart-energy"></div>
+        <div class="footer">Source: NYISO</div>
+    </div>
+    <div class="block-lg-70 block-md-100">
+        <div class="title">NYC Temperature vs Precipitation</div>
+        <div class="subtitle">Mean temp (°F) vs avg precipitation (in)</div>
+        <div id="chart-scatter"></div>
+        <div class="footer">Source: FiveThirtyEight / KNYC</div>
+    </div>
+</div>
+
 <div class="blockrow">
     <div class="block-40">
         <div class="title">News</div>
@@ -117,54 +113,77 @@
         <div class="card-list">
             <div class="card">
                 <div class="card-header">AQI today is bad</div>
-                <div class="card-body">PM2.5 concentration is currently 6.4 times the World Health Organization annual PM2.5 guideline value.</div>
+                <div class="card-body">PM2.5 concentration is currently 6.4 times the WHO annual guideline value.</div>
             </div>
             <div class="card">
                 <div class="card-header">Rain expected</div>
-                <div class="card-body">Expect rain showers throughout the day</div>
+                <div class="card-body">Expect rain showers throughout the day.</div>
             </div>
             <div class="card">
-                <div class="card-header">Rain expected</div>
-                <div class="card-body">Expect rain showers throughout the day</div>
+                <div class="card-header">Heat advisory issued</div>
+                <div class="card-body">Temperatures may reach 95°F this afternoon. Stay hydrated.</div>
             </div>
             <div class="card">
-                <div class="card-header">Rain expected</div>
-                <div class="card-body">Expect rain showers throughout the day</div>
+                <div class="card-header">Air quality improving</div>
+                <div class="card-body">AQI expected to drop to Good levels by evening.</div>
             </div>
             <div class="card">
-                <div class="card-header">Rain expected</div>
-                <div class="card-body">Expect rain showers throughout the day</div>
+                <div class="card-header">Strong winds overnight</div>
+                <div class="card-body">Gusts up to 45 mph expected between midnight and 6am.</div>
             </div>
             <div class="card">
-                <div class="card-header">Rain expected</div>
-                <div class="card-body">Expect rain showers throughout the day</div>
+                <div class="card-header">Fog advisory</div>
+                <div class="card-body">Dense fog advisory in effect until 9am. Reduced visibility on roads.</div>
             </div>
             <div class="card">
-                <div class="card-header">Rain expected</div>
-                <div class="card-body">Expect rain showers throughout the day</div>
+                <div class="card-header">Weekend outlook</div>
+                <div class="card-body">Partly cloudy with a chance of afternoon thunderstorms Saturday and Sunday.</div>
             </div>
         </div>
         <div class="footer">7 alerts &mdash; <a href="#">View all</a></div>
     </div>
     <div class="block-60">
-
     </div>
 </div>
+
 <div id="modal1" class="modal">
     <div class="modal-content">
         Hello!
         <a href="#modal-close" class="modal-close">&times;</a>
-
     </div>
 </div>
+
 </body>
 <script>
-    Blocks.chart('#chart', {
+    Blocks.chart('#chart-temp', {
         type: 'line',
         src: 'https://raw.githubusercontent.com/fivethirtyeight/data/master/us-weather-history/KNYC.csv',
         dataType: 'csv',
         xKey: 'date',
         yKeys: ['actual_mean_temp', 'actual_min_temp', 'actual_max_temp']
+    });
+
+    Blocks.chart('#chart-precip', {
+        type: 'bar',
+        src: 'https://raw.githubusercontent.com/fivethirtyeight/data/master/us-weather-history/KSEA.csv',
+        dataType: 'csv',
+        xKey: 'date',
+        yKeys: ['actual_precipitation', 'average_precipitation'],
+        limit: 60
+    });
+
+    Blocks.chart('#chart-energy', {
+        type: 'donut',
+        labels: ['Natural Gas', 'Nuclear', 'Hydro', 'Wind', 'Solar', 'Other'],
+        series: [39, 31, 18, 6, 2, 4]
+    });
+
+    Blocks.chart('#chart-scatter', {
+        type: 'scatter',
+        src: 'https://raw.githubusercontent.com/fivethirtyeight/data/master/us-weather-history/KNYC.csv',
+        dataType: 'csv',
+        xKey: 'actual_mean_temp',
+        yKeys: ['average_precipitation']
     });
 </script>
 </html>
