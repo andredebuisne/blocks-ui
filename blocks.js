@@ -5,10 +5,13 @@ const Blocks = (() => {
         grid: { borderColor: '#444' },
         tooltip: { theme: 'dark' },
         legend: { show: true, labels: { colors: '#fff' } },
-        xaxis: { labels: { style: { colors: '#aaa' } }, axisBorder: { color: '#555' }, axisTicks: { color: '#555' } },
+        xaxis: { tickAmount: 10, labels: { style: { colors: '#aaa' }, rotate: -45, hideOverlappingLabels: true }, axisBorder: { color: '#555' }, axisTicks: { color: '#555' } },
         yaxis: { labels: { style: { colors: '#aaa' } } },
-        colors: ['#f6c45e', '#d18f01', '#fbd176', '#888']
+        dataLabels: { enabled: false },
+        colors: ['#f6c45e', '#d18f01', '#fbd176', '#888', '#e07b39', '#6ab187']
     };
+
+    const PIE_TYPES = ['pie', 'donut'];
 
     function loadScript(src) {
         return new Promise((resolve, reject) => {
@@ -24,22 +27,45 @@ const Blocks = (() => {
         loadScript('https://cdn.jsdelivr.net/npm/papaparse@5/papaparse.min.js')
     ]);
 
-    function parseRows(rows, xKey, yKeys) {
-        const keys = yKeys || Object.keys(rows[0]).filter(k => k !== xKey && typeof rows[0][k] === 'number');
+    function parseRows(rows, xKey, yKeys, limit, type) {
+        const data = limit ? rows.slice(0, limit) : rows;
+
+        if (type === 'scatter') {
+            const key = yKeys ? yKeys[0] : Object.keys(data[0]).find(k => k !== xKey && typeof data[0][k] === 'number');
+            return {
+                categories: [],
+                series: [{
+                    name: key.replace(/_/g, ' '),
+                    data: data
+                        .map(r => [+r[xKey], +r[key]])
+                        .filter(([x, y]) => !isNaN(x) && !isNaN(y))
+                }]
+            };
+        }
+
+        if (PIE_TYPES.includes(type)) {
+            const key = yKeys ? yKeys[0] : Object.keys(data[0]).find(k => k !== xKey && typeof data[0][k] === 'number');
+            return {
+                labels: data.map(r => String(r[xKey])),
+                series: data.map(r => r[key] == null ? 0 : +r[key])
+            };
+        }
+
+        const keys = yKeys || Object.keys(data[0]).filter(k => k !== xKey && typeof data[0][k] === 'number');
         return {
-            categories: rows.map(r => r[xKey]),
+            categories: data.map(r => r[xKey]),
             series: keys.map(key => ({
                 name: key.replace(/_/g, ' '),
-                data: rows.map(r => r[key] == null ? null : +r[key])
+                data: data.map(r => r[key] == null ? null : +r[key])
             }))
         };
     }
 
-    function loadData(src, dataType, xKey, yKeys, cb) {
+    function loadData(src, dataType, xKey, yKeys, limit, type, cb) {
         if (dataType === 'csv') {
             Papa.parse(src, {
                 download: true, header: true, dynamicTyping: true,
-                complete: ({ data }) => cb(null, parseRows(data.filter(r => r[xKey]), xKey, yKeys)),
+                complete: ({ data }) => cb(null, parseRows(data.filter(r => r[xKey]), xKey, yKeys, limit, type)),
                 error: cb
             });
         } else {
@@ -47,7 +73,7 @@ const Blocks = (() => {
                 .then(r => r.json())
                 .then(json => {
                     const rows = Array.isArray(json) ? json : (json.data || Object.values(json)[0]);
-                    cb(null, parseRows(rows, xKey, yKeys));
+                    cb(null, parseRows(rows, xKey, yKeys, limit, type));
                 })
                 .catch(cb);
         }
@@ -58,19 +84,29 @@ const Blocks = (() => {
             const el = document.querySelector(selector);
             if (!el) return null;
 
-            function render(categories, series) {
-                const legendOpts = typeof opts.legend === 'object' ? opts.legend : {};
+            const type = opts.type || 'line';
+            const isPie = PIE_TYPES.includes(type);
+            const legendOpts = typeof opts.legend === 'object' ? opts.legend : {};
+
+            function render(result) {
                 const cfg = {
-                    chart: { ...defaults.chart, type: opts.type || 'line', height: opts.height || 300 },
-                    stroke: { ...defaults.stroke, ...(opts.stroke || {}) },
-                    grid: { ...defaults.grid, ...(opts.grid || {}) },
+                    chart: { ...defaults.chart, type, height: opts.height || 300 },
                     tooltip: { ...defaults.tooltip, ...(opts.tooltip || {}) },
                     legend: { ...defaults.legend, show: opts.legend !== false, ...legendOpts },
-                    xaxis: { ...defaults.xaxis, categories, ...(opts.xaxis || {}) },
-                    yaxis: { ...defaults.yaxis, ...(opts.yaxis || {}) },
+                    dataLabels: { ...defaults.dataLabels, ...(opts.dataLabels || {}) },
                     colors: opts.colors || defaults.colors,
-                    series
+                    series: result.series
                 };
+
+                if (isPie) {
+                    cfg.labels = result.labels || opts.labels || [];
+                } else {
+                    cfg.stroke = { ...defaults.stroke, ...(opts.stroke || {}) };
+                    cfg.grid = { ...defaults.grid, ...(opts.grid || {}) };
+                    cfg.xaxis = { ...defaults.xaxis, categories: result.categories || [], ...(opts.xaxis || {}) };
+                    cfg.yaxis = { ...defaults.yaxis, ...(opts.yaxis || {}) };
+                }
+
                 const instance = new ApexCharts(el, cfg);
                 instance.render();
                 return instance;
@@ -78,14 +114,18 @@ const Blocks = (() => {
 
             if (opts.src) {
                 return new Promise((resolve, reject) => {
-                    loadData(opts.src, opts.dataType || 'json', opts.xKey, opts.yKeys, (err, result) => {
+                    loadData(opts.src, opts.dataType || 'json', opts.xKey, opts.yKeys, opts.limit, type, (err, result) => {
                         if (err) { console.error('Blocks: failed to load', opts.src, err); reject(err); return; }
-                        resolve(render(result.categories, result.series));
+                        resolve(render(result));
                     });
                 });
             }
 
-            return render(opts.categories || [], opts.series || []);
+            return render({
+                series: opts.series || [],
+                categories: opts.categories || [],
+                labels: opts.labels || []
+            });
         });
     }
 
