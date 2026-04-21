@@ -2,7 +2,11 @@ body {
     background-color: #242424;
     color: #fff;
     font-family: monaco,Consolas,Lucida Console,monospace;
-    font-size: 16px
+    font-size: 16px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    margin: 0
 }
 
 ::-webkit-scrollbar {
@@ -697,4 +701,176 @@ input[type=submit] {
     font-size: 1rem;
     margin-top: 4px;
     cursor: pointer;
+}
+
+/* Navbar */
+.navbar {
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    height: 52px;
+    background: #1a1a1a;
+    border-bottom: 1px solid #444;
+    gap: 4px;
+    flex-shrink: 0;
+    position: relative
+}
+
+.navbar-sticky {
+    position: sticky;
+    top: 0;
+    z-index: 100
+}
+
+.navbar-brand {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #f6c45e;
+    text-decoration: none;
+    white-space: nowrap;
+    margin-right: 8px
+}
+
+.navbar-brand:hover { color: #fbd176 }
+
+.navbar-links {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    flex: 1
+}
+
+.navbar-link {
+    padding: 6px 12px;
+    color: #ccc;
+    text-decoration: none;
+    border: 1px solid transparent;
+    white-space: nowrap
+}
+
+.navbar-link:hover { color: #fff; border-color: #555 }
+.navbar-link.active { color: #fbd176; border-color: #666 }
+
+.navbar-toggle {
+    display: none;
+    background: none;
+    border: 1px solid #555;
+    color: #fff;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    margin-left: auto;
+    line-height: 1
+}
+
+.navbar-toggle:hover { border-color: #888 }
+
+@media (max-width: 575px) {
+    .navbar-toggle { display: block }
+
+    .navbar-links {
+        display: none;
+        flex-direction: column;
+        align-items: stretch;
+        position: absolute;
+        top: 52px;
+        left: 0;
+        right: 0;
+        background: #1a1a1a;
+        border-bottom: 1px solid #444;
+        z-index: 99;
+        gap: 0
+    }
+
+    .navbar-links.open { display: flex }
+
+    .navbar-link {
+        padding: 12px 16px;
+        border: none;
+        border-bottom: 1px solid #2a2a2a
+    }
+}
+
+/* Sidebar */
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 52px;
+    bottom: 0;
+    width: 220px;
+    background: #1a1a1a;
+    border-right: 1px solid #444;
+    display: flex;
+    flex-direction: column;
+    z-index: 50;
+    transition: transform 0.2s
+}
+
+.sidebar.collapsed {
+    transform: translateX(-100%)
+}
+
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid #444;
+    color: #f6c45e;
+    font-weight: bold;
+    flex-shrink: 0
+}
+
+.sidebar-toggle {
+    background: none;
+    border: none;
+    color: #aaa;
+    cursor: pointer;
+    padding: 2px 6px;
+    font-size: 1rem;
+    line-height: 1
+}
+
+.sidebar-toggle:hover { color: #fff }
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    flex: 1;
+    padding: 8px 0
+}
+
+.sidebar-link {
+    padding: 8px 16px;
+    color: #ccc;
+    text-decoration: none;
+    white-space: nowrap;
+    border-left: 3px solid transparent;
+    font-size: 0.95rem
+}
+
+.sidebar-link:hover { color: #fff; background: #252525 }
+
+.sidebar-link.active {
+    color: #fbd176;
+    border-left-color: #f6c45e;
+    background: #252525
+}
+
+/* ApexCharts overrides */
+.apexcharts-canvas {
+    touch-action: pan-y !important
+}
+
+/* Page footer */
+.page-footer {
+    padding: 16px;
+    background: #1a1a1a;
+    border-top: 1px solid #444;
+    color: #aaa;
+    font-size: 0.85rem;
+    text-align: center;
+    margin-top: auto;
+    flex-shrink: 0
 }

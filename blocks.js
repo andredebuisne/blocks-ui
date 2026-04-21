@@ -63,10 +63,9 @@ const Blocks = (() => {
 
         const keys = yKeys || Object.keys(data[0]).filter(k => k !== xKey && typeof data[0][k] === 'number');
         return {
-            categories: data.map(r => r[xKey]),
             series: keys.map(key => ({
                 name: key.replace(/_/g, ' '),
-                data: data.map(r => r[key] == null ? null : +r[key])
+                data: data.map(r => ({ x: String(r[xKey]), y: r[key] == null ? null : +r[key] }))
             }))
         };
     }
@@ -120,7 +119,7 @@ const Blocks = (() => {
                     cfg.yaxis  = { ...defaults.yaxis,  ...(opts.yaxis  || {}) };
                     cfg.xaxis  = isXY
                         ? { ...defaults.xaxis, ...(opts.xaxis || {}) }
-                        : { ...defaults.xaxis, categories: result.categories || [], ...(opts.xaxis || {}) };
+                        : { ...defaults.xaxis, type: 'category', ...(result.categories && result.categories.length ? { categories: result.categories } : {}), ...(opts.xaxis || {}) };
                 }
 
                 const instance = new ApexCharts(el, cfg);
@@ -171,7 +170,29 @@ const Blocks = (() => {
         });
     }
 
-    document.addEventListener('DOMContentLoaded', initTabs);
+    function initNavbar() {
+        document.querySelectorAll('.navbar-toggle').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const links = btn.closest('.navbar').querySelector('.navbar-links');
+                if (links) links.classList.toggle('open');
+            });
+        });
+    }
 
-    return { chart, load, initTabs };
+    function initSidebar() {
+        document.querySelectorAll('[data-toggle-sidebar]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const target = document.querySelector(btn.dataset.toggleSidebar);
+                if (target) target.classList.toggle('collapsed');
+            });
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        initTabs();
+        initNavbar();
+        initSidebar();
+    });
+
+    return { chart, load, initTabs, initNavbar, initSidebar };
 })();
