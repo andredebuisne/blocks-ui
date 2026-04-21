@@ -1,21 +1,29 @@
 # Blocks UI
 
-## A ligthweight UI framework to visualize data
+## A lightweight UI framework to visualize data
+
+[![npm](https://img.shields.io/npm/v/@ajdeb/blocks-ui)](https://www.npmjs.com/package/@ajdeb/blocks-ui)
 
 ![ui.png](ui.png)
 
 ## Installation
-1. CDN installation:
+1. CDN (always latest):
 
-Add this line in your `<head>`
 ```html
-<link rel="stylesheet" href="https://cdn.hudsonshipping.co/blocks.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ajdeb/blocks-ui@latest/blocks.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@ajdeb/blocks-ui@latest/blocks.min.js"></script>
 ```
 
-2. Download the `blocks.min.css` and `blocks.js` files locally and import them directly:
+For production, pin a specific version:
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ajdeb/blocks-ui@1.0.0/blocks.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@ajdeb/blocks-ui@1.0.0/blocks.min.js"></script>
+```
+
+2. Download the `blocks.min.css` and `blocks.js` files from [the releases](https://github.com/andredebuisne/blocks-ui/releases)  locally and import them directly:
 ```html
 <link rel="stylesheet" href="./path_to_static/blocks.min.css">
-<script src="./path_to_static/blocks.js"></script>
+<script src="./path_to_static/blocks.min.js"></script>
 ```
 
 ## Quickstart
