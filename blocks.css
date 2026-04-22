@@ -40,6 +40,10 @@ body {
     align-items: stretch
 }
 
+.blockrow:has([class*="sub-block-"]) {
+    min-height: 13rem
+}
+
 .blockrow > [class^="block-"],
 .blockrow > [class*=" block-"] {
     max-height: inherit
@@ -48,7 +52,13 @@ body {
 .blockrow-fluid {
     display: flex;
     flex-wrap: wrap;
-    align-items: stretch
+    align-items: stretch;
+    max-height: 60vh;
+}
+
+.blockrow-fluid > [class^="block-"],
+.blockrow-fluid > [class*=" block-"] {
+    max-height: inherit
 }
 
 [class^="block-"],[class*=" block-"] {
@@ -59,7 +69,8 @@ body {
     display: flex;
     flex-direction: column;
     overflow-y: auto;
-    min-height: 50px
+    min-height: 50px;
+    container-type: inline-size
 }
 
 [class*="sub-block-"]:first-child {
@@ -84,7 +95,8 @@ body {
     margin-right: 0!important;
     padding: 8px;
     overflow-y: auto;
-    flex: 0 1 auto
+    flex: 0 1 auto;
+    container-type: size
 }
 
 .no-border {
@@ -214,8 +226,17 @@ body {
 }
 
 @media (min-width: 768px) and (max-width: 1199px) {
-    .blockrow {
+    .blockrow, .blockrow-fluid {
         max-height: none
+    }
+
+    .blockrow-fluid > [class^="block-"],
+    .blockrow-fluid > [class*=" block-"] {
+        max-height: 60vh
+    }
+
+    .block-container:has([class*="sub-block-"]) {
+        height: 12rem
     }
 
     .block-md-10 {
@@ -260,6 +281,19 @@ body {
 }
 
 @media (min-width: 576px) and (max-width: 767px) {
+    .blockrow, .blockrow-fluid {
+        max-height: none
+    }
+
+    .blockrow-fluid > [class^="block-"],
+    .blockrow-fluid > [class*=" block-"] {
+        max-height: 60vh
+    }
+
+    .block-container:has([class*="sub-block-"]) {
+        height: 10rem
+    }
+
     .block-sm-10 {
         width:calc(10% - 8px)
     }
@@ -310,6 +344,10 @@ body {
         max-height: none
     }
 
+    .block-container:has([class*="sub-block-"]) {
+        height: 10rem
+    }
+
     .tab {
         padding: 8px 10px;
         font-size: 0.85rem
@@ -324,13 +362,10 @@ body {
         font-size: 1.2rem
     }
 
-    .number {
-        font-size: 2rem
-    }
 }
 
 .number {
-    font-size: 3rem;
+    font-size: clamp(2rem, 28cqi, 7rem);
     line-height: 1;
     margin-top: auto;
     margin-bottom: auto;
@@ -343,9 +378,55 @@ body {
 }
 
 .number .number-unit {
-    font-size: 1rem;
+    font-size: clamp(0.75rem, 10cqi, 2.5rem);
     font-weight: normal;
     color: #aaa
+}
+
+[class^="block-"]:has(> .number),
+[class*=" block-"]:has(> .number) {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-content: center;
+    gap: 2px 8px
+}
+
+[class^="block-"]:has(> .number) > :not(.number),
+[class*=" block-"]:has(> .number) > :not(.number) {
+    grid-column: 1
+}
+
+[class^="block-"]:has(> .number) > .number,
+[class*=" block-"]:has(> .number) > .number {
+    grid-column: 2;
+    grid-row: 1 / span 10;
+    align-self: center;
+    justify-self: center;
+    margin: 0
+}
+
+[class*="sub-block-"]:has(> .number) {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 2px 8px
+}
+
+[class*="sub-block-"]:has(> .number) > :not(.number) {
+    grid-column: 1
+}
+
+[class*="sub-block-"]:has(> .number) > .number {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: center;
+    justify-self: center;
+    margin: 0;
+    font-size: clamp(1.5rem, 18cqi, 4rem)
+}
+
+[class*="sub-block-"]:has(> .number) > .number .number-unit {
+    font-size: clamp(0.6rem, 6.5cqi, 1.5rem)
 }
 
 .text {
@@ -463,6 +544,9 @@ body {
     flex-direction: column;
     gap: 8px;
     margin-top: 8px;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
 }
 
 .card-list-horizontal {
@@ -565,7 +649,8 @@ a {
 
 table {
     width: 100%;
-    border-collapse: collapse
+    border-collapse: collapse;
+    font-size: clamp(0.7rem, 5cqb, 1.2rem)
 }
 
 thead {
@@ -922,6 +1007,95 @@ input[type=submit] {
     padding: 4px 0;
     font-size: 0.85rem;
     color: #ccc
+}
+
+/* MapLibre popup */
+.map-popup {
+    font-family: monaco, Consolas, 'Lucida Console', monospace;
+    font-size: 0.8rem;
+    padding: 2px 0
+}
+
+.map-popup-row {
+    display: flex;
+    gap: 10px;
+    padding: 2px 0;
+    border-bottom: 1px solid #eee
+}
+
+.map-popup-row:last-child { border-bottom: none }
+
+.map-popup-key {
+    color: #888;
+    white-space: nowrap;
+    flex-shrink: 0
+}
+
+.map-popup-val {
+    color: #222;
+    font-weight: bold;
+    word-break: break-word
+}
+
+/* MapLibre layer filter */
+.blocks-layer-filter {
+    padding: 6px 10px !important;
+    font-family: inherit !important;
+    font-size: 0.8rem !important;
+    background: #2a2a2a !important;
+    color: #ccc !important;
+    cursor: pointer !important;
+    white-space: nowrap !important
+}
+
+.blocks-layer-filter:hover { background: #333 !important; color: #fff !important }
+
+.blocks-layer-filter.active {
+    background: #047285 !important;
+    color: #fff !important
+}
+
+/* MapLibre legend */
+.blocks-legend {
+    background: #242424 !important;
+    color: #ccc !important;
+    padding: 10px 12px !important;
+    font-family: inherit !important;
+    font-size: 0.8rem !important;
+    border: 1px solid #555 !important;
+    min-width: 160px
+}
+
+.blocks-legend-title {
+    font-weight: bold;
+    color: #f6c45e;
+    margin-bottom: 6px
+}
+
+.blocks-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 2px 0
+}
+
+.blocks-legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0
+}
+
+.legend-pulse { animation: hc-pulse 2s ease-in-out infinite }
+
+/* MapLibre overrides */
+.maplibregl-map {
+    overflow: hidden
+}
+
+.maplibregl-cooperative-gesture-screen {
+    border-radius: 0;
+    font-family: inherit
 }
 
 /* ApexCharts overrides */
