@@ -20,7 +20,7 @@ const Blocks = (() => {
         },
         xaxis: {
             tickAmount: 10,
-            labels: { style: { colors: '#aaa' }, rotate: -45, hideOverlappingLabels: true },
+            labels: { style: { colors: '#aaa' }, rotate: 0, hideOverlappingLabels: true },
             axisBorder: { color: '#555' },
             axisTicks: { color: '#555' }
         },
