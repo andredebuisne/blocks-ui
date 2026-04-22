@@ -37,24 +37,17 @@
 
 <div class="blockrow">
     <div class="block-100">
-        <div class="title-lg">Weather Dashboard</div>
-        <div class="subtitle">Status: OK &mdash; New York City &amp; Seattle</div>
-        <div class="subtitle">Receive notifications about updates
-            <form action="/test" method="POST">
-                <input type="text" placeholder="Email address">
-                <input type="submit" value="Get notified">
-            </form>
-        </div>
+        <div class="title-lg">Geo Weather Dashboard</div>
+        <div class="subtitle">New York City &mdash; Live conditions</div>
     </div>
 </div>
 
 <div class="blockrow">
     <div class="block-lg-20 block-md-40">
         <div class="title">AQI (PM2.5)</div>
-        <div class="subtitle">Last updated: <span class="tooltip tooltip-right">5 min ago<span class="tooltip-text">This is a tooltip!</span></span></div>
+        <div class="subtitle">Last updated: <span class="tooltip tooltip-right">5 min ago<span class="tooltip-text">Source: EPA AirNow</span></span></div>
         <div class="number">42</div>
         <div class="subtitle">Moderate</div>
-        <div class="footer">Source: EPA AirNow</div>
     </div>
     <div class="block-lg-20 block-md-40">
         <div class="title">Temperature</div>
@@ -73,79 +66,39 @@
             <div class="number">14 <span class="number-unit">mph</span></div>
         </div>
     </div>
-    <div class="block-lg-40 block-md-100 tab-block">
-        <div class="tabs">
-            <a href="#tab1" class="tab active">Forecast</a>
-            <a href="#tab2" class="tab">Conditions</a>
-        </div>
-        <div id="tab1" class="tab-content">
-            <a href="#modal1">View full forecast</a>
-        </div>
-        <div id="tab2" class="tab-content">
-            <table>
-                <thead>
-                    <tr>
-                        <th scope="col">Temp</th>
-                        <th scope="col">Feels</th>
-                        <th scope="col">Humidity</th>
-                        <th scope="col">Wind</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <th scope="row">88°F</th>
-                        <th>91°F</th>
-                        <th>78%</th>
-                        <th>14 mph</th>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+    <div class="block-lg-40 block-md-100">
+        <div class="title">Conditions</div>
+        <div class="subtitle">Current observations</div>
+        <table>
+            <thead>
+                <tr>
+                    <th scope="col">Temp</th>
+                    <th scope="col">Feels</th>
+                    <th scope="col">Humidity</th>
+                    <th scope="col">Wind</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row">88°F</th>
+                    <th>91°F</th>
+                    <th>78%</th>
+                    <th>14 mph</th>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>
 
 <div class="blockrow-fluid">
     <div class="block-lg-60 block-md-100">
-        <div class="title">NYC Daily Temperature 2014–2015</div>
-        <div class="subtitle">Actual min / mean / max °F</div>
-        <div id="chart-temp"></div>
-        <div class="footer">Source: FiveThirtyEight / KNYC</div>
+        <div class="title">Map</div>
+        <div class="subtitle">Current conditions by location</div>
+        <div id="map" style="height: 700px;">
+        </div>
     </div>
     <div class="block-lg-40 block-md-100">
-        <div class="title">Seattle Daily Precipitation 2014–2015</div>
-        <div class="subtitle">Actual vs average (inches)</div>
-        <div id="chart-precip"></div>
-        <div class="footer">Source: FiveThirtyEight / KSEA</div>
-    </div>
-</div>
-
-<div class="blockrow-fluid">
-    <div class="block-lg-30 block-md-100">
-        <div class="title">NY Energy Mix</div>
-        <div class="subtitle">Generation by source, 2023</div>
-        <div id="chart-energy"></div>
-        <div class="footer">Source: NYISO</div>
-    </div>
-    <div class="block-lg-70 block-md-100">
-        <div class="title">NYC Temperature vs Precipitation</div>
-        <div class="subtitle">Mean temp (°F) vs avg precipitation (in)</div>
-        <div id="chart-scatter"></div>
-        <div class="footer">Source: FiveThirtyEight / KNYC</div>
-    </div>
-</div>
-
-<div class="blockrow-fluid">
-    <div class="block-100">
-        <div class="title">NYC Daily Temperature Heatmap 2014–2015</div>
-        <div class="subtitle">Mean °F by day and month</div>
-        <div id="chart-heatmap"></div>
-        <div class="footer">Source: FiveThirtyEight / KNYC</div>
-    </div>
-</div>
-
-<div class="blockrow">
-    <div class="block-40">
-        <div class="title">News</div>
+        <div class="title">Alerts</div>
         <div class="subtitle">Last updated 5 minutes ago</div>
         <div class="card-list">
             <div class="card">
@@ -161,10 +114,6 @@
                 <div class="card-body">Temperatures may reach 95°F this afternoon. Stay hydrated.</div>
             </div>
             <div class="card">
-                <div class="card-header">Air quality improving</div>
-                <div class="card-body">AQI expected to drop to Good levels by evening.</div>
-            </div>
-            <div class="card">
                 <div class="card-header">Strong winds overnight</div>
                 <div class="card-body">Gusts up to 45 mph expected between midnight and 6am.</div>
             </div>
@@ -173,13 +122,50 @@
                 <div class="card-body">Dense fog advisory in effect until 9am. Reduced visibility on roads.</div>
             </div>
             <div class="card">
-                <div class="card-header">Weekend outlook</div>
-                <div class="card-body">Partly cloudy with a chance of afternoon thunderstorms Saturday and Sunday.</div>
+                <div class="card-header">Thunderstorm watch</div>
+                <div class="card-body">Isolated thunderstorms possible this evening. Lightning risk elevated near the coast.</div>
+            </div>
+            <div class="card">
+                <div class="card-header">UV index very high</div>
+                <div class="card-body">UV index forecast to reach 9 between 11am and 3pm. Apply SPF 50+ sunscreen.</div>
+            </div>
+            <div class="card">
+                <div class="card-header">Ozone advisory</div>
+                <div class="card-body">Ground-level ozone exceeds safe thresholds. Sensitive groups should limit outdoor activity.</div>
+            </div>
+            <div class="card">
+                <div class="card-header">Flash flood watch</div>
+                <div class="card-body">Heavy rainfall may cause flash flooding in low-lying areas of Queens and Brooklyn.</div>
+            </div>
+            <div class="card">
+                <div class="card-header">Wind chill warning</div>
+                <div class="card-body">Wind chill values dropping to -10°F overnight. Frostbite possible in under 30 minutes.</div>
+            </div>
+            <div class="card">
+                <div class="card-header">Snow squall alert</div>
+                <div class="card-body">Brief but intense snow squall expected around 4pm. Near-zero visibility possible for 15–30 minutes.</div>
+            </div>
+            <div class="card">
+                <div class="card-header">Coastal flood advisory</div>
+                <div class="card-body">Minor flooding of low-lying coastal areas during high tide cycles this afternoon and evening.</div>
             </div>
         </div>
-        <div class="footer">7 alerts &mdash; <a href="#">View all</a></div>
+        <div class="footer">12 alerts &mdash; <a href="#">View all</a></div>
     </div>
-    <div class="block-60">
+</div>
+
+<div class="blockrow-fluid">
+    <div class="block-lg-60 block-md-100">
+        <div class="title">NYC Daily Temperature 2014–2015</div>
+        <div class="subtitle">Actual min / mean / max °F</div>
+        <div id="chart-temp"></div>
+        <div class="footer">Source: FiveThirtyEight / KNYC</div>
+    </div>
+    <div class="block-lg-40 block-md-100">
+        <div class="title">NY Energy Mix</div>
+        <div class="subtitle">Generation by source, 2023</div>
+        <div id="chart-energy"></div>
+        <div class="footer">Source: NYISO</div>
     </div>
 </div>
 
@@ -189,15 +175,14 @@
     WeatherUI &mdash; Built with Blocks UI &mdash; Data: FiveThirtyEight, EPA, NYISO
 </footer>
 
-<div id="modal1" class="modal">
-    <div class="modal-content">
-        Hello!
-        <a href="#modal-close" class="modal-close">&times;</a>
-    </div>
-</div>
-
 </body>
 <script>
+    Blocks.healthcheck([
+        { url: 'https://httpbin.org/status/200', name: 'API' },
+        { url: 'https://httpbin.org/status/200', name: 'Weather Feed' },
+        { url: 'https://httpbin.org/status/500', name: 'Alert Service' }
+    ], 30000);
+
     Blocks.chart('#chart-temp', {
         type: 'line',
         src: 'https://raw.githubusercontent.com/fivethirtyeight/data/master/us-weather-history/KNYC.csv',
@@ -206,53 +191,23 @@
         yKeys: ['actual_mean_temp', 'actual_min_temp', 'actual_max_temp']
     });
 
-    Blocks.chart('#chart-precip', {
-        type: 'bar',
-        src: 'https://raw.githubusercontent.com/fivethirtyeight/data/master/us-weather-history/KSEA.csv',
-        dataType: 'csv',
-        xKey: 'date',
-        yKeys: ['actual_precipitation', 'average_precipitation'],
-        limit: 60
-    });
-
     Blocks.chart('#chart-energy', {
         type: 'donut',
         labels: ['Natural Gas', 'Nuclear', 'Hydro', 'Wind', 'Solar', 'Other'],
         series: [39, 31, 18, 6, 2, 4]
     });
 
-    Blocks.chart('#chart-scatter', {
-        type: 'scatter',
-        src: 'https://raw.githubusercontent.com/fivethirtyeight/data/master/us-weather-history/KNYC.csv',
-        dataType: 'csv',
-        xKey: 'actual_mean_temp',
-        yKeys: ['average_precipitation']
+    Blocks.map('map').then(m => {
+        m.addSource('nyc-boroughs', {
+            type: 'geojson',
+            data: 'https://raw.githubusercontent.com/codeforgermany/click_that_hood/main/public/data/new-york-city-boroughs.geojson'
+        })
+        .addLine('nyc-boroughs-layer', {
+            source: 'nyc-boroughs',
+            color: '#738ffa',
+            width: 2
+        })
+        .addLayerFilter('Boroughs', ['nyc-boroughs-layer'], { visible: true })
     });
-
-    Blocks.healthcheck([
-        { url: 'https://httpbin.org/status/200', name: 'API' },
-        { url: 'https://httpbin.org/status/200', name: 'Weather Feed' },
-        { url: 'https://httpbin.org/status/500', name: 'Alert Service' }
-    ], 30000);
-
-    const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-
-    Blocks.load('https://raw.githubusercontent.com/fivethirtyeight/data/master/us-weather-history/KNYC.csv', 'csv')
-        .then(rows => {
-            const groups = {};
-            rows.forEach(r => {
-                const [year, month, day] = r.date.split('-').map(Number);
-                const key = MONTHS[month - 1] + " '" + String(year).slice(2);
-                if (!groups[key]) groups[key] = [];
-                groups[key].push({ x: String(day), y: r.actual_mean_temp });
-            });
-
-            Blocks.chart('#chart-heatmap', {
-                type: 'heatmap',
-                series: Object.entries(groups).map(([name, data]) => ({ name, data })),
-                height: 380,
-                legend: false
-            });
-        });
 </script>
 </html>

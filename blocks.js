@@ -33,9 +33,19 @@ const Blocks = (() => {
         });
     }
 
+    function loadStyle(href) {
+        return new Promise(resolve => {
+            if (document.querySelector(`link[href="${href}"]`)) { resolve(); return; }
+            const l = document.createElement('link');
+            l.rel = 'stylesheet'; l.href = href; l.onload = resolve;
+            document.head.appendChild(l);
+        });
+    }
+
     const ready = Promise.all([
         loadScript('https://cdn.jsdelivr.net/npm/apexcharts'),
-        loadScript('https://cdn.jsdelivr.net/npm/papaparse@5/papaparse.min.js')
+        loadScript('https://cdn.jsdelivr.net/npm/papaparse@5/papaparse.min.js'),
+        loadScript('https://unpkg.com/maplibre-gl@^5.6.2/dist/maplibre-gl.js')
     ]);
 
     function parseRows(rows, xKey, yKeys, limit, type) {
@@ -144,6 +154,35 @@ const Blocks = (() => {
         });
     }
 
+    function metric(selector, opts = {}) {
+        const el = document.querySelector(selector);
+        if (!el) return;
+        const numEl = el.querySelector('.number');
+        if (!numEl) return;
+
+        async function refresh() {
+            try {
+                const res = await fetch(opts.src, { cache: 'no-store' });
+                const json = await res.json();
+                const value = opts.key
+                    ? opts.key.split('.').reduce((o, k) => o?.[k], json)
+                    : json;
+                const formatted = opts.format ? opts.format(value) : value;
+                const unitEl = numEl.querySelector('.number-unit');
+                numEl.innerHTML = formatted + (unitEl ? ' ' + unitEl.outerHTML : '');
+            } catch (e) {
+                console.error('Blocks.metric: failed to load', opts.src, e);
+            }
+        }
+
+        refresh();
+        if (opts.interval) {
+            const timer = setInterval(refresh, opts.interval);
+            return { stop: () => clearInterval(timer), refresh };
+        }
+        return { refresh };
+    }
+
     function initTabs() {
         document.querySelectorAll('.tabs').forEach(tabsEl => {
             const parent = tabsEl.parentElement;
@@ -247,5 +286,153 @@ const Blocks = (() => {
         initSidebar();
     });
 
-    return { chart, load, healthcheck, initTabs, initNavbar, initSidebar };
+    function map(selector, opts = {}) {
+        return Promise.all([
+            ready,
+            loadStyle('https://unpkg.com/maplibre-gl@^5.6.2/dist/maplibre-gl.css')
+        ]).then(() => {
+            const _map = new maplibregl.Map({
+                container: selector,
+                cooperativeGestures: true,
+                style: opts.style || 'https://tiles.openfreemap.org/styles/positron',
+                center: opts.center || [-73.99175394815153, 40.70688351792593],
+                zoom: opts.zoom || 10,
+            });
+
+            const queue = [];
+            _map.on('load', () => queue.forEach(fn => fn()));
+
+            function whenLoaded(fn) {
+                _map.loaded() ? fn() : queue.push(fn);
+            }
+
+            // Default controls
+            whenLoaded(() => {
+                if (opts.navigation !== false)
+                    _map.addControl(new maplibregl.NavigationControl(), 'top-right');
+                if (opts.geolocate !== false)
+                    _map.addControl(new maplibregl.GeolocateControl({
+                        positionOptions: { enableHighAccuracy: true },
+                        trackUserLocation: true
+                    }), 'top-right');
+            });
+
+            const popup = new maplibregl.Popup({ closeButton: false, closeOnClick: false });
+
+            function buildPopupHtml(properties, fields) {
+                const entries = fields
+                    ? fields.map(f => [f, properties[f]]).filter(([, v]) => v != null)
+                    : Object.entries(properties).filter(([, v]) => v != null);
+                return '<div class="map-popup">' +
+                    entries.map(([k, v]) =>
+                        `<div class="map-popup-row">` +
+                        `<span class="map-popup-key">${k}</span>` +
+                        `<span class="map-popup-val">${v}</span>` +
+                        `</div>`
+                    ).join('') +
+                    '</div>';
+            }
+
+            function attachPopup(id, fields) {
+                _map.on('mouseenter', id, e => {
+                    if (!e.features.length) return;
+                    _map.getCanvas().style.cursor = 'pointer';
+                    popup.setLngLat(e.lngLat)
+                        .setHTML(buildPopupHtml(e.features[0].properties, fields))
+                        .addTo(_map);
+                });
+                _map.on('mouseleave', id, () => {
+                    _map.getCanvas().style.cursor = '';
+                    popup.remove();
+                });
+            }
+
+            function makeLegend(title, items, legendOpts = {}) {
+                let visible = legendOpts.visible || false;
+                let _container;
+                return {
+                    onAdd(m) {
+                        _container = document.createElement('div');
+                        _container.className = 'maplibregl-ctrl blocks-legend';
+                        _container.style.display = visible ? 'block' : 'none';
+                        _container.innerHTML =
+                            `<div class="blocks-legend-title">${title}</div>` +
+                            items.map(item =>
+                                `<div class="blocks-legend-item">` +
+                                `<span class="blocks-legend-dot${item.pulse ? ' legend-pulse' : ''}" style="background:${item.color}"></span>` +
+                                `<span>${item.label}</span>` +
+                                `</div>`
+                            ).join('');
+                        return _container;
+                    },
+                    onRemove() { _container.parentNode.removeChild(_container); },
+                    toggle() {
+                        visible = !visible;
+                        _container.style.display = visible ? 'block' : 'none';
+                    }
+                };
+            }
+
+            function makeLayerFilter(title, layers, filterOpts = {}) {
+                let visible = filterOpts.visible || false;
+                const legend = filterOpts.legend || null;
+                return {
+                    onAdd(m) {
+                        const el = document.createElement('div');
+                        el.className = 'maplibregl-ctrl maplibregl-ctrl-group blocks-layer-filter' + (visible ? ' active' : '');
+                        el.textContent = title;
+                        el.addEventListener('click', () => {
+                            visible = !visible;
+                            el.classList.toggle('active', visible);
+                            const vis = visible ? 'visible' : 'none';
+                            layers.forEach(l => m.setLayoutProperty(l, 'visibility', vis));
+                            if (legend) legend.toggle();
+                        });
+                        this._el = el;
+                        return el;
+                    },
+                    onRemove() { this._el.parentNode.removeChild(this._el); }
+                };
+            }
+
+            const wrapper = {
+                addSource(id, config) {
+                    whenLoaded(() => _map.addSource(id, config));
+                    return wrapper;
+                },
+                addLine(id, config = {}) {
+                    const layer = {
+                        id,
+                        type: 'line',
+                        source: config.source,
+                        layout: { visibility: config.visible === false ? 'none' : 'visible' },
+                        paint: {
+                            'line-color': config.color || '#738ffa',
+                            'line-width': config.width || 2
+                        }
+                    };
+                    if (config.sourceLayer) layer['source-layer'] = config.sourceLayer;
+                    whenLoaded(() => {
+                        _map.addLayer(layer);
+                        if (config.popup !== false)
+                            attachPopup(id, config.popupProperties || null);
+                    });
+                    return wrapper;
+                },
+                addLegend(title, items, legendOpts = {}) {
+                    const legend = makeLegend(title, items, legendOpts);
+                    whenLoaded(() => _map.addControl(legend, legendOpts.position || 'top-left'));
+                    return legend;
+                },
+                addLayerFilter(title, layers, filterOpts = {}) {
+                    whenLoaded(() => _map.addControl(makeLayerFilter(title, layers, filterOpts), filterOpts.position || 'top-right'));
+                    return wrapper;
+                }
+            };
+
+            return wrapper;
+        });
+    }
+
+    return { chart, load, metric, healthcheck, initTabs, initNavbar, initSidebar, map };
 })();
