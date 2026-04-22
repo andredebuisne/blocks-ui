@@ -3,8 +3,12 @@ const Blocks = (() => {
         chart: {
             background: 'transparent',
             foreColor: '#fff',
-            toolbar: { show: true, tools: { download: false} },
-            zoom: { enabled: true, type: 'x' }
+            toolbar: {
+                show: true,
+                tools: { download: false, selection: false, zoom: true, zoomin: false, zoomout: false, pan: true, reset: true }
+            },
+            zoom: { enabled: true, type: 'x' },
+            animations: { enabled: false }
         },
         stroke: { width: 1 },
         grid: { borderColor: '#444' },
@@ -15,7 +19,7 @@ const Blocks = (() => {
             position: 'top',
             horizontalAlign: 'left',
             floating: true,
-            offsetY: 6,
+            offsetY: -4,
             itemMargin: { horizontal: 6, vertical: 4 }
         },
         xaxis: {
@@ -58,8 +62,11 @@ const Blocks = (() => {
         loadStyle('https://unpkg.com/maplibre-gl@^5.6.2/dist/maplibre-gl.css')
     ])); }
 
-    function parseRows(rows, xKey, yKeys, limit, type) {
+    function parseRows(rows, xKey, yKeys, limit, type, xType) {
         const data = limit ? rows.slice(0, limit) : rows;
+        const toX = xType === 'datetime'
+            ? v => new Date(v).getTime()
+            : v => String(v);
 
         if (XY_TYPES.includes(type)) {
             const key = yKeys ? yKeys[0] : Object.keys(data[0]).find(k => k !== xKey && typeof data[0][k] === 'number');
@@ -85,7 +92,7 @@ const Blocks = (() => {
         return {
             series: keys.map(key => ({
                 name: key.replace(/_/g, ' '),
-                data: data.map(r => ({ x: String(r[xKey]), y: r[key] == null ? null : +r[key] }))
+                data: data.map(r => ({ x: toX(r[xKey]), y: r[key] == null ? null : +r[key] }))
             }))
         };
     }
@@ -146,7 +153,7 @@ const Blocks = (() => {
                     cfg.yaxis  = { ...defaults.yaxis,  ...(opts.yaxis  || {}) };
                     cfg.xaxis  = isXY
                         ? { ...defaults.xaxis, ...(opts.xaxis || {}) }
-                        : { ...defaults.xaxis, type: 'category', ...(result.categories && result.categories.length ? { categories: result.categories } : {}), ...(opts.xaxis || {}) };
+                        : { ...defaults.xaxis, type: opts.xType || 'category', ...(result.categories && result.categories.length ? { categories: result.categories } : {}), ...(opts.xaxis || {}) };
                 }
 
                 const instance = new ApexCharts(el, cfg);
@@ -158,7 +165,7 @@ const Blocks = (() => {
                 return new Promise((resolve, reject) => {
                     fetchRows(opts.src, opts.dataType || 'json', (err, rows) => {
                         if (err) { console.error('Blocks: failed to load', opts.src, err); reject(err); return; }
-                        resolve(render(parseRows(rows, opts.xKey, opts.yKeys, opts.limit, type)));
+                        resolve(render(parseRows(rows, opts.xKey, opts.yKeys, opts.limit, type, opts.xType)));
                     });
                 });
             }
@@ -292,8 +299,8 @@ const Blocks = (() => {
         }
 
         render();
-        poll();
         const timer = setInterval(poll, interval);
+        setTimeout(poll, 3000);
         return { stop: () => clearInterval(timer), refresh: poll };
     }
 
@@ -326,7 +333,7 @@ const Blocks = (() => {
         const el = document.getElementById(selector) || document.querySelector(selector);
         if (el) el.innerHTML = '<div class="blocks-loading">Loading map…</div>';
 
-        return mapReady().then(() => new Promise(resolve => setTimeout(() => {
+        return mapReady().then(() => {
             if (el) el.innerHTML = '';
             const _map = new maplibregl.Map({
                 container: selector,
@@ -467,8 +474,8 @@ const Blocks = (() => {
                 }
             };
 
-            resolve(wrapper);
-        }, 0)));
+            return wrapper;
+        });
     }
 
     return { chart, load, metric, healthcheck, statuses, initTabs, initNavbar, initSidebar, map };
