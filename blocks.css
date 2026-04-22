@@ -88,6 +88,10 @@ body {
     padding: 0!important
 }
 
+.block-scroll {
+    overflow-y: auto !important;
+}
+
 [class*="sub-block-"] {
     box-sizing: border-box;
     border: 1px solid #fff;
@@ -98,7 +102,7 @@ body {
     padding: 8px;
     overflow-y: auto;
     flex: 0 1 auto;
-    container-type: size
+    container-type: inline-size
 }
 
 .no-border {
@@ -237,10 +241,6 @@ body {
         max-height: 60vh
     }
 
-    .block-container:has([class*="sub-block-"]) {
-        height: 12rem
-    }
-
     .block-md-10 {
         width:calc(10% - 8px)
     }
@@ -280,6 +280,10 @@ body {
     .block-md-100 {
         width: calc(100% - 8px)
     }
+
+    .block-scroll {
+        max-height: 20rem;
+    }
 }
 
 @media (min-width: 576px) and (max-width: 767px) {
@@ -290,10 +294,6 @@ body {
     .blockrow-fluid > [class^="block-"],
     .blockrow-fluid > [class*=" block-"] {
         max-height: 60vh
-    }
-
-    .block-container:has([class*="sub-block-"]) {
-        height: 10rem
     }
 
     .block-sm-10 {
@@ -335,6 +335,10 @@ body {
     .block-sm-100 {
         width: calc(100% - 8px)
     }
+
+    .block-scroll {
+        max-height: 20rem;
+    }
 }
 
 @media (max-width: 575px) {
@@ -346,8 +350,8 @@ body {
         max-height: none
     }
 
-    .block-container:has([class*="sub-block-"]) {
-        height: 10rem
+    .block-scroll {
+        max-height: 20rem;
     }
 
     .tab {
@@ -669,7 +673,7 @@ a {
 table {
     width: 100%;
     border-collapse: collapse;
-    font-size: clamp(0.7rem, 5cqb, 1.2rem)
+    font-size: clamp(0.7rem, 5cqi, 1.2rem)
 }
 
 table.status-heatmap {
@@ -1149,7 +1153,9 @@ input[type=submit] {
 }
 
 .apexcharts-legend {
-    padding: 0 !important
+    padding: 0 !important;
+    max-width: 65% !important;
+    flex-wrap: wrap !important;
 }
 
 .apexcharts-legend-series {
