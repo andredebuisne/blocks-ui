@@ -66,27 +66,35 @@
             <div class="number">14 <span class="number-unit">mph</span></div>
         </div>
     </div>
-    <div class="block-lg-40 block-md-100">
-        <div class="title">Conditions</div>
-        <div class="subtitle">Current observations</div>
-        <table>
-            <thead>
-                <tr>
-                    <th scope="col">Temp</th>
-                    <th scope="col">Feels</th>
-                    <th scope="col">Humidity</th>
-                    <th scope="col">Wind</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <th scope="row">88°F</th>
-                    <th>91°F</th>
-                    <th>78%</th>
-                    <th>14 mph</th>
-                </tr>
-            </tbody>
-        </table>
+    <div class="block-lg-40 block-md-100 tab-block">
+        <div class="tabs">
+            <a href="#cond-conditions" class="tab active">Conditions</a>
+            <a href="#cond-status" class="tab">Status</a>
+        </div>
+        <div id="cond-conditions" class="tab-content active">
+            <div class="subtitle">Current observations</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">Temp</th>
+                        <th scope="col">Feels</th>
+                        <th scope="col">Humidity</th>
+                        <th scope="col">Wind</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row">88°F</th>
+                        <th>91°F</th>
+                        <th>78%</th>
+                        <th>14 mph</th>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="cond-status" class="tab-content">
+            <div id="status-heatmap"></div>
+        </div>
     </div>
 </div>
 
@@ -177,6 +185,13 @@
 
 </body>
 <script>
+    Blocks.statuses('#status-heatmap', [
+        { label: 'Flood Risk',     status: 'low' },
+        { label: 'Hurricane Risk', status: 'low' },
+        { label: 'Storm Risk',     status: 'moderate' },
+        { label: 'High AQI Risk',  status: 'high' }
+    ]);
+
     Blocks.healthcheck([
         { url: 'https://httpbin.org/status/200', name: 'API' },
         { url: 'https://httpbin.org/status/200', name: 'Weather Feed' },

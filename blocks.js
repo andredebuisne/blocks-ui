@@ -42,11 +42,13 @@ const Blocks = (() => {
         });
     }
 
-    const ready = Promise.all([
-        loadScript('https://cdn.jsdelivr.net/npm/apexcharts'),
-        loadScript('https://cdn.jsdelivr.net/npm/papaparse@5/papaparse.min.js'),
-        loadScript('https://unpkg.com/maplibre-gl@^5.6.2/dist/maplibre-gl.js')
-    ]);
+    let _apexReady, _papaReady, _mapReady;
+    function apexReady() { return _apexReady || (_apexReady = loadScript('https://cdn.jsdelivr.net/npm/apexcharts')); }
+    function papaReady() { return _papaReady || (_papaReady = loadScript('https://cdn.jsdelivr.net/npm/papaparse@5/papaparse.min.js')); }
+    function mapReady()  { return _mapReady  || (_mapReady  = Promise.all([
+        loadScript('https://unpkg.com/maplibre-gl@^5.6.2/dist/maplibre-gl.js'),
+        loadStyle('https://unpkg.com/maplibre-gl@^5.6.2/dist/maplibre-gl.css')
+    ])); }
 
     function parseRows(rows, xKey, yKeys, limit, type) {
         const data = limit ? rows.slice(0, limit) : rows;
@@ -96,15 +98,21 @@ const Blocks = (() => {
     }
 
     function load(src, dataType) {
-        return ready.then(() => new Promise((resolve, reject) => {
+        const deps = dataType === 'csv' ? papaReady() : Promise.resolve();
+        return deps.then(() => new Promise((resolve, reject) => {
             fetchRows(src, dataType, (err, rows) => err ? reject(err) : resolve(rows));
         }));
     }
 
     function chart(selector, opts = {}) {
-        return ready.then(() => {
-            const el = document.querySelector(selector);
-            if (!el) return null;
+        const el = document.querySelector(selector);
+        if (!el) return Promise.resolve(null);
+        el.innerHTML = '<div class="blocks-loading">Loading…</div>';
+
+        const deps = opts.src
+            ? Promise.all([apexReady(), papaReady()])
+            : apexReady();
+        return deps.then(() => {
 
             const type = opts.type || 'line';
             const isPie = PIE_TYPES.includes(type);
@@ -112,6 +120,7 @@ const Blocks = (() => {
             const legendOpts = typeof opts.legend === 'object' ? opts.legend : {};
 
             function render(result) {
+                el.innerHTML = '';
                 const cfg = {
                     chart: { ...defaults.chart, type, height: opts.height || 300 },
                     tooltip: { ...defaults.tooltip, ...(opts.tooltip || {}) },
@@ -280,17 +289,46 @@ const Blocks = (() => {
         return { stop: () => clearInterval(timer), refresh: poll };
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
+    function statuses(selector, items = []) {
+        const el = document.querySelector(selector);
+        if (!el) return;
+
+        const palette = {
+            low:      { bg: 'rgba(46,125,50,0.6)',   color: '#fff' },
+            moderate: { bg: 'rgba(249,168,37,0.6)',  color: '#1a1a1a' },
+            high:     { bg: 'rgba(198,40,40,0.6)',   color: '#fff' }
+        };
+
+        const rows = items.map(({ label, status }) => {
+            const level = (status || 'low').toLowerCase();
+            const { bg, color } = palette[level] || palette.low;
+            const cap = level.charAt(0).toUpperCase() + level.slice(1);
+            return `<tr>
+                <th scope="row">${label}</th>
+                <td style="background:${bg};color:${color};text-align:center;font-weight:bold;padding:4px 8px">${cap}</td>
+            </tr>`;
+        }).join('');
+
+        el.innerHTML = `<table class="status-heatmap"><tbody>${rows}</tbody></table>`;
+    }
+
+    function domReady(fn) {
+        if (document.readyState !== 'loading') fn();
+        else document.addEventListener('DOMContentLoaded', fn);
+    }
+
+    domReady(() => {
         initTabs();
         initNavbar();
         initSidebar();
     });
 
     function map(selector, opts = {}) {
-        return Promise.all([
-            ready,
-            loadStyle('https://unpkg.com/maplibre-gl@^5.6.2/dist/maplibre-gl.css')
-        ]).then(() => {
+        const el = document.getElementById(selector) || document.querySelector(selector);
+        if (el) el.innerHTML = '<div class="blocks-loading">Loading map…</div>';
+
+        return mapReady().then(() => new Promise(resolve => setTimeout(() => {
+            if (el) el.innerHTML = '';
             const _map = new maplibregl.Map({
                 container: selector,
                 cooperativeGestures: true,
@@ -430,9 +468,9 @@ const Blocks = (() => {
                 }
             };
 
-            return wrapper;
-        });
+            resolve(wrapper);
+        }, 0)));
     }
 
-    return { chart, load, metric, healthcheck, initTabs, initNavbar, initSidebar, map };
+    return { chart, load, metric, healthcheck, statuses, initTabs, initNavbar, initSidebar, map };
 })();
