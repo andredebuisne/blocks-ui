@@ -1148,6 +1148,11 @@ input[type=submit] {
     touch-action: pan-y !important
 }
 
+[class^="block-"]:has(.apexcharts-canvas),
+[class*=" block-"]:has(.apexcharts-canvas) {
+    overflow: visible
+}
+
 /* Page footer */
 .page-footer {
     padding: 16px;
