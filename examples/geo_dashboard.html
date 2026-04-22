@@ -46,13 +46,13 @@
     <div class="block-lg-20 block-md-40">
         <div class="title">AQI (PM2.5)</div>
         <div class="subtitle">Last updated: <span class="tooltip tooltip-right">5 min ago<span class="tooltip-text">Source: EPA AirNow</span></span></div>
-        <div class="number">42</div>
         <div class="subtitle">Moderate</div>
+        <div class="number">42</div>
     </div>
     <div class="block-lg-20 block-md-40">
-        <div class="title">Temperature</div>
-        <div class="subtitle">Feels like 91°F</div>
-        <div class="number">88 <span class="number-unit">°F</span></div>
+        <div class="title">Status</div>
+        <div class="subtitle">Current risk levels</div>
+        <div id="status-heatmap"></div>
     </div>
     <div class="block-lg-20 block-md-100 block-container">
         <div class="sub-block-50">
@@ -69,7 +69,7 @@
     <div class="block-lg-40 block-md-100 tab-block">
         <div class="tabs">
             <a href="#cond-conditions" class="tab active">Conditions</a>
-            <a href="#cond-status" class="tab">Status</a>
+            <a href="#cond-temperature" class="tab">Temperature</a>
         </div>
         <div id="cond-conditions" class="tab-content active">
             <div class="subtitle">Current observations</div>
@@ -92,8 +92,10 @@
                 </tbody>
             </table>
         </div>
-        <div id="cond-status" class="tab-content">
-            <div id="status-heatmap"></div>
+        <div id="cond-temperature" class="tab-content">
+            <div class="title">Temperature</div>
+            <div class="subtitle">Feels like 91°F</div>
+            <div class="number">88 <span class="number-unit">°F</span></div>
         </div>
     </div>
 </div>
@@ -186,10 +188,10 @@
 </body>
 <script>
     Blocks.statuses('#status-heatmap', [
-        { label: 'Flood Risk',     status: 'low' },
-        { label: 'Hurricane Risk', status: 'low' },
-        { label: 'Storm Risk',     status: 'moderate' },
-        { label: 'High AQI Risk',  status: 'high' }
+        { label: 'Flood Risk',     status: 'Low',      bg: 'rgba(46,125,50,0.6)',  color: '#fff' },
+        { label: 'Hurricane Risk', status: 'Low',      bg: 'rgba(46,125,50,0.6)',  color: '#fff' },
+        { label: 'Storm Risk',     status: 'Moderate', bg: 'rgba(249,168,37,0.6)', color: '#1a1a1a' },
+        { label: 'High AQI Risk',  status: 'High',     bg: 'rgba(198,40,40,0.6)',  color: '#fff' }
     ]);
 
     Blocks.healthcheck([

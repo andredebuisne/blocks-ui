@@ -293,21 +293,12 @@ const Blocks = (() => {
         const el = document.querySelector(selector);
         if (!el) return;
 
-        const palette = {
-            low:      { bg: 'rgba(46,125,50,0.6)',   color: '#fff' },
-            moderate: { bg: 'rgba(249,168,37,0.6)',  color: '#1a1a1a' },
-            high:     { bg: 'rgba(198,40,40,0.6)',   color: '#fff' }
-        };
-
-        const rows = items.map(({ label, status }) => {
-            const level = (status || 'low').toLowerCase();
-            const { bg, color } = palette[level] || palette.low;
-            const cap = level.charAt(0).toUpperCase() + level.slice(1);
-            return `<tr>
+        const rows = items.map(({ label, status, bg, color }) =>
+            `<tr>
                 <th scope="row">${label}</th>
-                <td style="background:${bg};color:${color};text-align:center;font-weight:bold;padding:4px 8px">${cap}</td>
-            </tr>`;
-        }).join('');
+                <td style="background:${bg || ''};color:${color || '#fff'};text-align:center;font-weight:bold;padding:4px 8px">${status || ''}</td>
+            </tr>`
+        ).join('');
 
         el.innerHTML = `<table class="status-heatmap"><tbody>${rows}</tbody></table>`;
     }
