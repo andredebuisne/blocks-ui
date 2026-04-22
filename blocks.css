@@ -1148,6 +1148,14 @@ input[type=submit] {
     touch-action: pan-y !important
 }
 
+.apexcharts-legend {
+    padding: 0 !important
+}
+
+.apexcharts-legend-series {
+    margin: 0 !important
+}
+
 [class^="block-"]:has(.apexcharts-canvas),
 [class*=" block-"]:has(.apexcharts-canvas) {
     overflow: visible

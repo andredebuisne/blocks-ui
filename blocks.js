@@ -9,7 +9,15 @@ const Blocks = (() => {
         stroke: { width: 1 },
         grid: { borderColor: '#444' },
         tooltip: { theme: 'dark' },
-        legend: { show: true, labels: { colors: '#fff' } },
+        legend: {
+            show: true,
+            labels: { colors: '#fff' },
+            position: 'top',
+            horizontalAlign: 'left',
+            floating: true,
+            offsetY: 6,
+            itemMargin: { horizontal: 6, vertical: 4 }
+        },
         xaxis: {
             tickAmount: 10,
             labels: { style: { colors: '#aaa' }, rotate: -45, hideOverlappingLabels: true },
