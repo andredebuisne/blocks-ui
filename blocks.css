@@ -368,6 +368,12 @@ body {
         font-size: 1.2rem
     }
 
+    [class^="block-"]:has(> .table-aside-md) > .table-aside-md,
+    [class*=" block-"]:has(> .table-aside-md) > .table-aside-md,
+    [class*="sub-block-"]:has(> .table-aside-md) > .table-aside-md {
+        margin-top: 8px;
+    }
+
 }
 
 .number {
@@ -435,6 +441,79 @@ body {
 
 [class*="sub-block-"]:has(> .number) > .number .number-unit {
     font-size: clamp(0.6rem, 6.5cqi, 1.5rem)
+}
+
+/* Table beside title/subtitle layout */
+[class^="block-"]:has(> .table-aside),
+[class*=" block-"]:has(> .table-aside),
+[class*="sub-block-"]:has(> .table-aside) {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto auto 1fr;
+    gap: 4px 16px;
+}
+
+[class^="block-"]:has(> .table-aside) > :not(.table-aside),
+[class*=" block-"]:has(> .table-aside) > :not(.table-aside),
+[class*="sub-block-"]:has(> .table-aside) > :not(.table-aside) {
+    grid-column: 1;
+    align-self: start;
+}
+
+[class^="block-"]:has(> .table-aside) > .table-aside,
+[class*=" block-"]:has(> .table-aside) > .table-aside,
+[class*="sub-block-"]:has(> .table-aside) > .table-aside {
+    grid-column: 2;
+    grid-row: 1 / -1;
+    align-self: center;
+    width: 100%;
+}
+
+/* table-aside-md: aside layout on ≥576px, stacks below title on mobile */
+@media (min-width: 576px) {
+    [class^="block-"]:has(> .table-aside-md),
+    [class*=" block-"]:has(> .table-aside-md),
+    [class*="sub-block-"]:has(> .table-aside-md) {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        grid-template-rows: auto auto 1fr;
+        gap: 4px 16px;
+    }
+
+    [class^="block-"]:has(> .table-aside-md) > :not(.table-aside-md),
+    [class*=" block-"]:has(> .table-aside-md) > :not(.table-aside-md),
+    [class*="sub-block-"]:has(> .table-aside-md) > :not(.table-aside-md) {
+        grid-column: 1;
+        align-self: start;
+    }
+
+    [class^="block-"]:has(> .table-aside-md) > .table-aside-md,
+    [class*=" block-"]:has(> .table-aside-md) > .table-aside-md,
+    [class*="sub-block-"]:has(> .table-aside-md) > .table-aside-md {
+        grid-column: 2;
+        grid-row: 1 / -1;
+        align-self: center;
+        width: 100%;
+    }
+}
+
+.table-x-scroll {
+    overflow-x: auto;
+}
+
+.table-x-scroll > table {
+    min-width: max-content;
+}
+
+img.icon {
+    width: 1.4em;
+    height: 1.4em;
+    vertical-align: middle;
+    filter: brightness(0) invert(1);
+}
+
+img.icon.icon-muted {
+    opacity: 0.5;
 }
 
 .text {
@@ -674,6 +753,84 @@ table {
     width: 100%;
     border-collapse: collapse;
     font-size: clamp(0.7rem, 5cqi, 1.2rem)
+}
+
+/* Borderless table variant */
+table.table-borderless thead {
+    background: none;
+}
+
+table.table-borderless thead th {
+    color: #999;
+    font-weight: normal;
+    border: none;
+}
+
+table.table-borderless td {
+    border: none;
+}
+
+/* Timeline table: fixed columns, optional first-column separator, typed rows */
+.table-timeline {
+    table-layout: fixed;
+}
+
+.table-timeline thead th {
+    text-align: center;
+    font-size: 0.78em;
+    letter-spacing: 0.04em;
+    padding-bottom: 2px;
+}
+
+.table-timeline thead th:first-child {
+    color: #fff;
+}
+
+.table-timeline td {
+    text-align: center;
+    vertical-align: middle;
+    padding: 2px 4px;
+}
+
+.table-timeline.table-split th:first-child,
+.table-timeline.table-split td:first-child {
+    border-right: 1px solid #444;
+    padding-right: 12px;
+}
+
+.table-timeline .row-icon-label td {
+    padding: 2px 4px;
+}
+
+.table-timeline .row-icon-label td > div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.table-timeline .row-icon-label span {
+    font-size: 0.72em;
+    color: #999;
+}
+
+.table-timeline img.icon {
+    width: 1.1em;
+    height: 1.1em;
+    flex-shrink: 0;
+}
+
+.table-timeline .row-value td {
+    font-size: 1.05em;
+    font-weight: 600;
+    color: #fff;
+    padding-top: 1px;
+}
+
+.table-timeline .row-note td {
+    font-size: 0.72em;
+    color: #7da8e0;
+    padding: 1px 4px;
 }
 
 table.status-heatmap {
