@@ -586,6 +586,7 @@ img.icon.icon-muted {
     padding: 0;
     display: grid;
     grid-template-columns: 1fr;
+    align-content: start;
 }
 
 .tab-block > .tab-content {
